@@ -1,0 +1,77 @@
+#include<stdio.h>
+#include<stdlib.h>
+struct PCB{
+	char name[100];
+	int priority;
+	int runtime;
+	int ndtime;
+};
+bool cmp(struct PCB a,struct PCB b)
+{
+	if(a.ndtime==a.runtime) return true;
+	else {
+		if(a.priority<b.priority) return true;
+		else if(a.priority==b.priority){
+			if(a.runtime>b.runtime) return true;
+		}
+		return false ;
+	} 
+}
+int main(){
+	struct PCB a[1000];
+	int count,r;
+	printf("请输入进程总个数?");
+	scanf("%d",&count);
+	r=count;
+	for(int i=0;i<count;i++){
+		printf("进程号No.%d:\n",i);
+		printf("输入进程名:");
+		scanf("%s",a[i].name);
+		printf("输入进程优先数（0~99）:");
+		scanf("%d",&a[i].priority);
+		printf("输入进程运行时间:");
+		scanf("%d",&a[i].ndtime);
+		a[i].runtime=0;
+	}
+	while(true)
+	{
+		r=count;
+		for(int i=0;i<count-1;i++)
+		{
+			for (int j=i+1;j<count;j++)
+			{
+				if(cmp(a[i],a[j])) {
+					struct PCB temp=a[j];
+					a[j]=a[i];
+					a[i]=temp;
+				}
+			}
+		}
+		a[0].priority--;
+		a[0].runtime++;
+		
+		printf("in : --------- name:%s priority:%d ndtime:%d runtime:%d\n",a[0].name,a[0].priority,a[0].ndtime,a[0].runtime);
+		for(int i=1;i<count;i++)
+		{
+			printf("wait: -------- name:%s priority:%d ndtime:%d runtime:%d\n",a[i].name,a[i].priority,a[i].ndtime,a[i].runtime);
+		}
+		
+		
+		for(int i=0;i<count;i++)
+		{
+			if(a[i].ndtime<=a[i].runtime) r--;
+		}
+		if(r==0) {
+			printf("done");
+			break; 
+		}
+		system("pause");
+	}	
+	
+	for(int i=0;i<count;i++)
+	{
+		printf("%d %d\n",a[i].priority,a[i].runtime);
+	}
+	
+	return 0;
+}
